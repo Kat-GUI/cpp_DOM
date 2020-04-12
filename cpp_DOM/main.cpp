@@ -23,7 +23,7 @@ public:
 
 	}
 };
-class Widget 
+class Widget
 {
 public:
 	Widget(DOM_initializer list)

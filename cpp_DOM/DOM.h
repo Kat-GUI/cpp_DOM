@@ -24,10 +24,8 @@ namespace DOM
         Item(M T::*ptr,M value):value(value),ptr(ptr){}
         void assign(void* object,std::string type)override
         {
-			if (typeid(T).name() != type.c_str())
-				std::cerr<<"无效的初始化: "<<type<<"不存在目标成员。该属性只能初始化"<<typeid(T).name()<<"及其派生类"<<std::endl;
-			else 
-				((T*)object->*ptr)=value;
+			((T*)object->*ptr)=value;
+				//std::cerr<<"无效的初始化: "<<type<<"不存在目标成员。该属性只能初始化"<<typeid(T).name()<<"及其派生类"<<std::endl;
         }
 	};
 
