@@ -13,13 +13,22 @@ public:
 	int bottom=0;
 	int height = 0, width = 0;
 	Layout* child;
-	Layout(DOM_initializer<Layout> list)
+	Layout()=default;
+	Layout(DOM_initializer list)
 	{
 		moveProperty(list, this);
 	}
 	void show() 
 	{
 
+	}
+};
+class Widget 
+{
+public:
+	Widget(DOM_initializer list)
+	{
+		moveProperty(list,this);
 	}
 };
 inline auto left(int px) { return item(&Layout::left, px); }
@@ -42,9 +51,9 @@ int main()
 	//		<Layout/>
 	//<Layout/>
 
-	Layout window = {
-		id("MyWindow"),  margin(10)
+	Widget window = {
+		id("MyWindow"),margin(10)
 	};
-	window.show();
+	/*window.show();*/
 
 }

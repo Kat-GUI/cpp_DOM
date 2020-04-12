@@ -4,45 +4,44 @@
 #include<memory>
 #include<typeindex>
 #include<vector>
+#include<string>
+#include<iostream>
+#include<exception>
 namespace DOM
 {
-
-    template<typename T>
     class ItemBase
     {
     public:
-        virtual void assign(T* object)=0;
+        virtual void assign(void* object, std::string type)=0;
     };
 
 	template<typename T,typename M>
-	class Item:public ItemBase<T>
+	class Item:public ItemBase
 	{
         M T::*ptr;
 		M value;
 	public:
         Item(M T::*ptr,M value):value(value),ptr(ptr){}
-        void assign(T* object)override
+        void assign(void* object,std::string type)override
         {
-            (object->*ptr)=value;
+			if (typeid(T).name() != type.c_str())
+				std::cerr<<"无效的初始化: "<<type<<"不存在目标成员。该属性只能初始化"<<typeid(T).name()<<"及其派生类"<<std::endl;
+			else 
+				((T*)object->*ptr)=value;
         }
 	};
 
 	template<typename T>
-	class MutiItem:public ItemBase<T>
+	class MutiItem:public ItemBase
 	{
-		std::vector<ItemBase<T>*> Itemlist;
+		std::vector<ItemBase*> Itemlist;
 	public:
-		MutiItem(std::initializer_list<ItemBase<T>*> list):Itemlist(list)
+		MutiItem(std::initializer_list<ItemBase*> list):Itemlist(list){}
+		void assign(void* object, std::string type)override
 		{
-			Itemlist=list;
-			int a=0;
-			a++;
-		}
-		void assign(T* object)override
-		{
-			for (ItemBase<T>* item : Itemlist)
+			for (ItemBase* item : Itemlist)
 			{
-				item->assign(object);
+				item->assign(object,type);
 				delete item;
 			}
 		}
@@ -54,15 +53,14 @@ namespace DOM
 		return new Item<T,M>(ptr,value);
 	};
 
-	template<typename T>
-	using DOM_initializer = std::initializer_list<ItemBase<T>*>;
+	using DOM_initializer = std::initializer_list<ItemBase*>;
 
 	template<typename T>
-	void moveProperty(DOM_initializer<T> property,T* destination)
+	void moveProperty(DOM_initializer property,T* destination)
 	{
-		for (ItemBase<T>* iter : property)
+		for (ItemBase* iter : property)
 		{
-			iter->assign(destination);
+			iter->assign(destination,typeid(destination).name());
 			delete iter;
 		}
 	}
