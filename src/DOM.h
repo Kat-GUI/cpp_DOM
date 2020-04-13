@@ -25,7 +25,7 @@ namespace DOM
         void assign(void* object,std::string type)override
         {
 			((T*)object->*ptr)=value;
-				//std::cerr<<"ÎÞÐ§µÄ³õÊ¼»¯: "<<type<<"²»´æÔÚÄ¿±ê³ÉÔ±¡£¸ÃÊôÐÔÖ»ÄÜ³õÊ¼»¯"<<typeid(T).name()<<"¼°ÆäÅÉÉúÀà"<<std::endl;
+				//std::cerr<<"ï¿½ï¿½Ð§ï¿½Ä³ï¿½Ê¼ï¿½ï¿½: "<<type<<"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½Ü³ï¿½Ê¼ï¿½ï¿½"<<typeid(T).name()<<"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"<<std::endl;
         }
 	};
 
@@ -44,6 +44,18 @@ namespace DOM
 			}
 		}
 	};
+
+	template<typename T>
+	class ComplexItem:public ItemBase
+	{
+		std::function<void(T*)> func;
+	public:
+		ComplexItem(std::function<void(T*)> fun)func(fun){}
+		void assign(void* object,std::string type)override
+		{
+			func((T*)object);
+		}
+	};
 	
 	template<typename T,typename M>
 	Item<T, M>* item(M T::*ptr,M value)
@@ -51,10 +63,10 @@ namespace DOM
 		return new Item<T,M>(ptr,value);
 	};
 
-	using DOM_initializer = std::initializer_list<ItemBase*>;
+	using initializer = std::initializer_list<ItemBase*>;
 
 	template<typename T>
-	void moveProperty(DOM_initializer property,T* destination)
+	void moveProperty(initializer property,T* destination)
 	{
 		for (ItemBase* iter : property)
 		{
