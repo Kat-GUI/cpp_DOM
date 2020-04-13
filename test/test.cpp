@@ -1,5 +1,5 @@
 #include<iostream>
-#include"DOM.h"
+#include"../src/DOM.h"
 #include<string>
 using namespace DOM;
 using namespace std;
@@ -23,7 +23,7 @@ public:
 
 	}
 };
-class Widget
+class Widget:public Layout
 {
 public:
 	Widget(DOM_initializer list)
@@ -54,6 +54,6 @@ int main()
 	Widget window = {
 		id("MyWindow"),margin(10)
 	};
-	/*window.show();*/
+	window.show();
 
 }
